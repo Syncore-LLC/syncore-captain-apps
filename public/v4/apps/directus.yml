@@ -22,6 +22,7 @@ services:
             STORAGE_LOCAL_REGION: nyc3
             STORAGE_LOCAL_ENDPOINT: nyc3.digitaloceanspaces.com
             STORAGE_LOCAL_ACL: public-read
+            STORAGE_LOCAL_ROOT: $$cap_s3_root
             EMAIL_TRANSPORT: mailgun
             EMAIL_FROM: $$cap_email_from
             EMAIL_MAILGUN_API_KEY: $$cap_email_key
@@ -61,6 +62,10 @@ caproverOneClickApp:
         - description: S3 API secret
           id: $$cap_s3_secret
           label: S3 API secret
+
+        - description: The folder name where assets are uploaded to on S3. This should be the name of the client.
+          id: $$cap_s3_root
+          label: S3 Root
 
         - description: The address emails will be sent from.
           defaultValue: 'no-reply@synco.re'
