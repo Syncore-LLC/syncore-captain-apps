@@ -82,6 +82,7 @@ echo "#############################################"
 echo "######### Commit and push ###" 
 echo "#############################################" 
 sleep 1s
+echo $GITHUB_ACTOR
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 echo `date` >> forcebuild.date
