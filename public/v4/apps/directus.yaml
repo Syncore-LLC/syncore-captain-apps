@@ -75,6 +75,9 @@ caproverOneClickApp:
         - description: The domain Mailgun will use to send emails.
           id: $$cap_email_domain
           label: Mailgun domain
+        - description: The Mailgun API key.
+          id: $$cap_email_domain
+          label: Mailgun API key
     instructions:
         end: 'Directus has been deployed: http://$$cap_appname.$$cap_root_domain'
         start: >-
