@@ -18,7 +18,7 @@ services:
             DB_DATABASE: $$cap_db_db
             DB_USER: $$cap_db_user
             DB_PASSWORD: $$cap_db_password
-            DB_SSL__REJECT_UNAUTHORIZED: false
+            DB_SSL__REJECT_UNAUTHORIZED: 'false'
             DB_SSL__CA: $$cap_db_ca
 
             # S3 configurations
