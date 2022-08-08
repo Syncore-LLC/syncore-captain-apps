@@ -18,6 +18,8 @@ services:
             DB_DATABASE: $$cap_db_db
             DB_USER: $$cap_db_user
             DB_PASSWORD: $$cap_db_password
+            DB_SSL__REJECT_UNAUTHORIZED: false
+            DB_SSL__CA: $$cap_db_ca
 
             # S3 configurations
             STORAGE_LOCATIONS: syncorecdn
@@ -51,37 +53,30 @@ caproverOneClickApp:
         - description: The production URL for this instance. Make sure to use "https://..."
           id: $$cap_public_url
           label: Public URL
-          validRegex: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
 
         - description: The database host, make sure to use the VPC host, not the public host.
           id: $$cap_db_host
           label: Database Host
-          validRegex: /^[a-zA-Z0-9_]*$/
 
         - description: The database port.
           id: $$cap_db_port
           label: Database Port
-          validRegex: /^[0-9]*$/
 
         - description: The actual database to connect into.
           id: $$cap_db_db
           label: Database Name
-          validRegex: /^[a-zA-Z0-9_]*$/
 
         - description: The database's username.
           id: $$cap_db_user
           label: Database Username
-          validRegex: /^[a-zA-Z0-9_]*$/
 
         - description: The database's password.
           id: $$cap_db_password
           label: Database Password
-          validRegex: /^[a-zA-Z0-9_]*$/
 
-        - description: The database's password.
-          id: $$cap_db_password
-          label: Database Password
-          validRegex: /^[a-zA-Z0-9_]*$/
+        - description: The database's SSL certificate, just paste the whole key
+          id: $$cap_db_ca
+          label: Database SSL Certificate
 
         - description: The DO Spaces API key
           id: $$cap_s3_key
@@ -117,13 +112,11 @@ caproverOneClickApp:
           defaultValue: $$cap_gen_random_hex(16)
           id: $$cap_directus_auth_secret_key
           label: Directus Secret Key
-          validRegex: /^(?=.*\d).{10,}$/
 
         - description: Directus public key
           defaultValue: $$cap_gen_random_hex(16)
           id: $$cap_directus_auth_public_key
           label: Directus Public Key
-          validRegex: /^(?=.*\d).{10,}$/
 
     instructions:
         end: '✨ Directus has been deployed: http://$$cap_appname.$$cap_root_domain'
