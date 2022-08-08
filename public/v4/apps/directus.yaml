@@ -5,83 +5,129 @@ services:
         image: directus/directus
         restart: always
         environment:
-            KEY: $$cap_directus_auth_public_key
-            SECRET: $$cap_directus_auth_secret_key
-            DB_CLIENT: 'pg'
-            DB_CONNECTION_STRING: $$cap_db_connection_string
-            NODE_TLS_REJECT_UNAUTHORIZED: 0
-            CACHE_ENABLED: 'true'
-            ADMIN_EMAIL: admin@synco.re
-            ADMIN_PASSWORD: $$cap_admin_password
+            # Meta configurations
             PUBLIC_URL: $$cap_public_url
-            STORAGE_LOCATIONS: s3
-            STORAGE_S3_DRIVER: s3
-            STORAGE_S3_KEY: $$cap_s3_key
-            STORAGE_LOCAL_SECRET: $$cap_s3_secret
-            STORAGE_LOCAL_BUCKET: syncore-cdn
-            STORAGE_LOCAL_REGION: nyc3
-            STORAGE_LOCAL_ENDPOINT: nyc3.digitaloceanspaces.com
-            STORAGE_LOCAL_ACL: public-read
-            STORAGE_LOCAL_ROOT: $$cap_s3_root
+            CACHE_ENABLED: 'true'
+            CORS_ENABLED: true
+            CORS_ORIGIN: true
+
+            # Database configurations
+            DB_CLIENT: 'pg'
+            DB_HOST: $$cap_db_host
+            DB_PORT: $$cap_db_port
+            DB_DATABASE: $$cap_db_db
+            DB_USER: $$cap_db_user
+            DB_PASSWORD: $$cap_db_password
+
+            # S3 configurations
+            STORAGE_LOCATIONS: syncorecdn
+            STORAGE_SYNCORECDN_DRIVER: s3
+            STORAGE_SYNCORECDN_KEY: $$cap_s3_key
+            STORAGE_SYNCORECDN_SECRET: $$cap_s3_secret
+            STORAGE_SYNCORECDN_ROOT: $$cap_s3_root
+            STORAGE_SYNCORECDN_BUCKET: syncore-cdn
+            STORAGE_SYNCORECDN_REGION: nyc3
+            STORAGE_SYNCORECDN_ENDPOINT: nyc3.digitaloceanspaces.com
+            STORAGE_SYNCORECDN_ACL: public-read
+
+            # Email configurations
             EMAIL_TRANSPORT: mailgun
             EMAIL_FROM: $$cap_email_from
             EMAIL_MAILGUN_API_KEY: $$cap_email_key
             EMAIL_MAILGUN_DOMAIN: $$cap_email_domain
-            CORS_ENABLED: true
-            CORS_ORIGIN: true
+
+            # Admin user account
+            ADMIN_EMAIL: admin@synco.re
+            ADMIN_PASSWORD: $$cap_admin_password
+
+            # Security
+            KEY: $$cap_directus_auth_public_key
+            SECRET: $$cap_directus_auth_secret_key
+
         caproverExtra:
             containerHttpPort: '8055'
 caproverOneClickApp:
     variables:
-        - description: Database connection string URL, you should be using the VPC connection string for extra security.
-          id: $$cap_db_connection_string
-          label: Connection String
-          validRegex: /postgresql:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+        - description: The production URL for this instance. Make sure to use "https://..."
+          id: $$cap_public_url
+          label: Public URL
+          validRegex: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
 
-        - description: Directus Auth Secret Key (must not be the same as Directus Auth Public Key)
-          defaultValue: $$cap_gen_random_hex(16)
-          id: $$cap_directus_auth_secret_key
-          label: Directus Auth Secret Key
-          validRegex: /^(?=.*\d).{10,}$/
+        - description: The database host, make sure to use the VPC host, not the public host.
+          id: $$cap_db_host
+          label: Database Host
+          validRegex: /^[a-zA-Z0-9_]*$/
 
-        - description: Directus Auth Public Key (must not be the same as Directus Auth Secret Key)
-          defaultValue: $$cap_gen_random_hex(16)
-          id: $$cap_directus_auth_public_key
-          label: Directus Auth Public Key
-          validRegex: /^(?=.*\d).{10,}$/
+        - description: The database port.
+          id: $$cap_db_port
+          label: Database Port
+          validRegex: /^[0-9]*$/
+
+        - description: The actual database to connect into.
+          id: $$cap_db_db
+          label: Database Name
+          validRegex: /^[a-zA-Z0-9_]*$/
+
+        - description: The database's username.
+          id: $$cap_db_user
+          label: Database Username
+          validRegex: /^[a-zA-Z0-9_]*$/
+
+        - description: The database's password.
+          id: $$cap_db_password
+          label: Database Password
+          validRegex: /^[a-zA-Z0-9_]*$/
+
+        - description: The database's password.
+          id: $$cap_db_password
+          label: Database Password
+          validRegex: /^[a-zA-Z0-9_]*$/
+
+        - description: The DO Spaces API key
+          id: $$cap_s3_key
+          label: S3 API Key
+
+        - description: The DO Spaces API secret
+          id: $$cap_s3_secret
+          label: S3 API Secret
+
+        - description: The root directory where assets are uploaded into, should be the client's name
+          id: $$cap_s3_root
+          label: S3 Root
+
+        - description: The Mailgun API key
+          id: $$cap_email_key
+          label: Mailgun API Key
+
+        - description: The Mailgun domain to use for sending emails
+          id: $$cap_email_domain
+          label: Mailgun Domain
+
+        - description: The default email address to send from
+          defaultValue: 'no-reply@synco.re'
+          id: $$cap_email_from
+          label: Mailgun Email Address
 
         - description: Directus admin user password
           defaultValue: projNameinit01!
           id: $$cap_admin_password
-          label: Directus admin user password
+          label: Directus Admin Password
 
-        - description: S3 API key
-          id: $$cap_s3_key
-          label: S3 API key
+        - description: Directus secret key
+          defaultValue: $$cap_gen_random_hex(16)
+          id: $$cap_directus_auth_secret_key
+          label: Directus Secret Key
+          validRegex: /^(?=.*\d).{10,}$/
 
-        - description: S3 API secret
-          id: $$cap_s3_secret
-          label: S3 API secret
+        - description: Directus public key
+          defaultValue: $$cap_gen_random_hex(16)
+          id: $$cap_directus_auth_public_key
+          label: Directus Public Key
+          validRegex: /^(?=.*\d).{10,}$/
 
-        - description: The folder name where assets are uploaded to on S3. This should be the name of the client.
-          id: $$cap_s3_root
-          label: S3 Root
-
-        - description: The address emails will be sent from.
-          defaultValue: 'no-reply@synco.re'
-          id: $$cap_email_from
-          label: Email from
-
-        - description: The domain Mailgun will use to send emails.
-          id: $$cap_email_domain
-          label: Mailgun domain
-        - description: The Mailgun API key.
-          id: $$cap_email_domain
-          label: Mailgun API key
     instructions:
-        end: 'Directus has been deployed: http://$$cap_appname.$$cap_root_domain'
-        start: >-
-            Syncore's customized Directus app.
+        end: '✨ Directus has been deployed: http://$$cap_appname.$$cap_root_domain'
+        start: '⚙️ Deploying Directus...'
     displayName: 'Syncore — Directus'
     isOfficial: false
-    description: Syncore's customized Directus app.
+    description: A customized version of Directus for use with Syncore's FaaS clients.
