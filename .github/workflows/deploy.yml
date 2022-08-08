@@ -37,7 +37,7 @@ jobs:
         with: 
           node-version: 14
       - name: Validate apps
-        run: npm ci && npm run formatter_write && npm run validate_app
+        run: npm ci && npm run formatter-write && npm run validate_app
       - name: Build one-click apps
         run: npm ci && npm run build
       - name: Upload artifact
