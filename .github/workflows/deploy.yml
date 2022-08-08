@@ -1,17 +1,31 @@
-name: Publish One Click Apps
+name: Publish Syncore Apps
 
 on:
-  push:
-    branches: [master]
+    push:
+        branches: [master]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14
-      - run: npm ci && npm run publish
-        env:
-          GITHUB_PERSONAL_TOKEN: ${{secrets.GITHUB_PERSONAL_TOKEN}}
+    build:
+        runs-on: ubuntu-latest
+        steps:
+              - uses: actions/checkout@v3
+              - uses: actions/setup-node@v3
+                with:
+                  node-version: 14
+              
+              - name: Build captian apps
+                run: |
+                  rm -rf dist
+                  npm ci && npm run build
+
+              - name: Commit "dist"
+                run: |
+                  git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git config --local user.name "github-actions[bot]"
+                  cd dist
+                  git commit -m "♻️ update apps" -a
+
+              - name: Deploy to GH Pages
+                uses: ad-m/github-push-action@master
+                with:
+                  branch: 'gh-pages'
