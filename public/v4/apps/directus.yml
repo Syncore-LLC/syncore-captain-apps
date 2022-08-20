@@ -99,7 +99,7 @@ caproverOneClickApp:
           label: Mailgun Domain
 
         - description: The default email address to send from
-          defaultValue: 'no-reply@synco.re'
+          defaultValue: 'no-reply@syncor.llc'
           id: $$cap_email_from
           label: Mailgun Email Address
 
